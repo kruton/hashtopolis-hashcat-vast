@@ -22,6 +22,41 @@ jobs:
       attestations: write
 
     steps:
+    - name: Free up disk space
+      run: |
+        echo "Available disk space before cleanup:"
+        df -h
+        
+        # Remove .NET, Android, and other large installations to free up space
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /opt/ghc
+        sudo rm -rf /usr/local/share/boost
+        sudo rm -rf /usr/local/graalvm/
+        sudo rm -rf /usr/local/share/powershell
+        sudo rm -rf /usr/local/share/chromium
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/google/chrome
+        sudo rm -rf /opt/microsoft/msedge
+        sudo rm -rf /opt/microsoft/powershell
+        sudo rm -rf /opt/pipx
+        sudo rm -rf /usr/lib/mono
+        sudo rm -rf /usr/local/julia*
+        sudo rm -rf /opt/hostedtoolcache/CodeQL
+        sudo rm -rf /opt/hostedtoolcache/go
+        sudo rm -rf /opt/hostedtoolcache/node
+        sudo rm -rf /opt/hostedtoolcache/Python
+        sudo rm -rf /opt/hostedtoolcache/Ruby
+        
+        # Clean apt cache
+        sudo apt-get clean
+        
+        # Remove swap file if it exists
+        sudo swapoff -a || true
+        sudo rm -f /swapfile || true
+        
+        echo "Available disk space after cleanup:"
+        df -h
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -59,8 +94,9 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        # Disable caching for pull requests to save disk space
+        cache-from: ${{ github.event_name != 'pull_request' && 'type=gha' || '' }}
+        cache-to: ${{ github.event_name != 'pull_request' && 'type=gha,mode=max' || '' }}
         build-args: |
           BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
           VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
