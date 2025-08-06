@@ -1,9 +1,0 @@
-{
-  "debug": true,
-  "files-path": "/home/runner/work/hashtopolis-hashcat-vast/hashtopolis-hashcat-vast/files",
-  "crackers-path": "/home/runner/work/hashtopolis-hashcat-vast/hashtopolis-hashcat-vast/crackers",
-  "hashlists-path": "/home/runner/work/hashtopolis-hashcat-vast/hashtopolis-hashcat-vast/hashlists",
-  "zaps-path": "/home/runner/work/hashtopolis-hashcat-vast/hashtopolis-hashcat-vast",
-  "preprocessors-path": "/home/runner/work/hashtopolis-hashcat-vast/hashtopolis-hashcat-vast/preprocessors",
-  "url": "http://example.com/api/server.php"
-}
