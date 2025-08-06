@@ -27,11 +27,16 @@ RUN apt update && apt install -y --no-install-recommends \
 # Create and set working directory
 WORKDIR /root/htpclient
 
+# Copy entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 RUN git clone https://github.com/hashtopolis/agent-python.git && \
   cd agent-python && \
   ./build.sh && \
   mv hashtopolis.zip ../ && \
   cd ../ && rm -R agent-python
 
-# Default command to start the hashtopolis client (can be overridden)
-CMD ["python3", "hashtopolis.zip", "--help"]
+# Set entrypoint and default command
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["--auto-start"]
