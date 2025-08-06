@@ -4,6 +4,16 @@ This container is useful for quickly! deploying lots of agents from vast.ai to y
 
 You should be familiar with the prerequisites for hashcat and hashtopolis, this isn't a step-by-step guide as such, It's half the battle is if you already have access to a hashtopolis server.
 
+## Container Registry
+
+The Docker container is automatically built and published to GitHub Container Registry. You can pull the latest version with:
+
+```bash
+docker pull ghcr.io/kruton/hashtopolis-hashcat-vast:latest
+```
+
+The container is built for multiple architectures (linux/amd64, linux/arm64) and signed with cosign for security.
+
 ### Prerequisites
 
 In order to fully utilise this container you'll require the following...
@@ -47,7 +57,7 @@ Go to `https://{your_domain}/config.php?view=5` and check box to allow vouchers 
 
 #### Vast.ai
 
-Edit `Image & Config` and use `milz0/hashtopolis-hashcat-vast` as your custom image
+Edit `Image & Config` and use `ghcr.io/kruton/hashtopolis-hashcat-vast:latest` as your custom image
 
 Your onstart-script should be written out as so in vast.ai, not before replacing both values {server} and {voucher_id} with your own.
 ```
