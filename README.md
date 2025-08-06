@@ -55,10 +55,63 @@ type `crontab -e` and add...
 You need to have reusable voucher codes checked in your hashtopolis install.
 Go to `https://{your_domain}/config.php?view=5` and check box to allow vouchers to be use multiple times.
 
+#### Running with Environment Variables
+
+The container now supports automatic startup using environment variables. Set `HASHTOPOLIS_URL` and `HASHTOPOLIS_VOUCHER` when running the container:
+
+```bash
+docker run -e HASHTOPOLIS_URL='https://your-server.com' \
+           -e HASHTOPOLIS_VOUCHER='your-voucher-code' \
+           ghcr.io/kruton/hashtopolis-hashcat-vast:latest
+```
+
+#### Kubernetes Deployment
+
+For Kubernetes deployments, create a ConfigMap or Secret with your Hashtopolis configuration:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hashtopolis-config
+data:
+  HASHTOPOLIS_URL: "https://your-server.com"
+  HASHTOPOLIS_VOUCHER: "your-voucher-code"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashtopolis-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hashtopolis-agent
+  template:
+    metadata:
+      labels:
+        app: hashtopolis-agent
+    spec:
+      containers:
+      - name: hashtopolis-agent
+        image: ghcr.io/kruton/hashtopolis-hashcat-vast:latest
+        envFrom:
+        - configMapRef:
+            name: hashtopolis-config
+```
+
 #### Vast.ai
 
 Edit `Image & Config` and use `ghcr.io/kruton/hashtopolis-hashcat-vast:latest` as your custom image
 
+**Option 1: Using Environment Variables (Recommended)**
+Set the environment variables in vast.ai:
+- `HASHTOPOLIS_URL`: Your hashtopolis server URL
+- `HASHTOPOLIS_VOUCHER`: Your voucher code
+
+Leave the onstart script empty or use a simple command like `sleep infinity` to keep the container running.
+
+**Option 2: Using Custom Onstart Script**
 Your onstart-script should be written out as so in vast.ai, not before replacing both values {server} and {voucher_id} with your own.
 ```
 cd htpclient
